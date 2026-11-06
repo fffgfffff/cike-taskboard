@@ -2,90 +2,49 @@
 
 ## 现状
 
-**尚未真正上架。** 这不是代码问题，而是市场机制 + 本机凭证：
+- **代码已上传公开仓库**：<https://github.com/fffgfffff/cike-taskboard>
+- **市场条目尚未提交**：仓库创建于 2026-11-06，`awesome-dsh-plugin` 要求仓库创建满 **1 天**，明天才能过 CI。
+- 提交模板已填好真实 URL：`marketplace/entry.template.yml`。
+- 提交路径：Fork `awesome-dsh-plugin/awesome-dsh-plugin`，添加
+  `data/plugins/fffgfffff__cike-taskboard.yml`，提 PR。
 
-- DSH 插件市场（`dsh-market`）本身**不接收上传**；
-- 它的列表来自 [`awesome-dsh-plugin/awesome-dsh-plugin`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin) 的 `data/plugins/*.yml`；
-- 上架 = **一个公开 GitHub 仓库 + 一个 PR**；
-- 当前机器：没有 `gh`、没有 GitHub Token、`npm whoami` 未登录、没有远端 git 仓库。
-  因此无法代替你创建公开仓库或提 PR。
-
-代码、教程、图标、提交模板已经准备好，只差一个公开仓库和一次 PR。
+仓库已加 topics：`dsh-plugin`、`dsh`、`taskboard`、`todo`、`productivity`。
 
 ---
 
-## 已经准备好的东西
+## 上架步骤
 
-| 文件 | 用途 |
-|---|---|
-| `使用教程.md` | 用户教程 |
-| `docs/icon-180.png` | 市场卡片图标（180×180 PNG） |
-| `marketplace/entry.template.yml` | awesome-dsh-plugin 条目模板 |
-| `package.json` | 已声明 `dsh.bundle` + `dsh.client`，可安装 |
-| `lib/` | 预构建产物，安装免构建 |
-| `使用教程.md` / `README.md` / `SECURITY.md` / `CHANGELOG.md` | 商店详情素材 |
+### 1. 仓库（已完成）
 
----
+- 公开仓库：https://github.com/fffgfffff/cike-taskboard
+- `package.json` 已声明 `dsh.bundle.patch` + `dsh.client`
+- `cordis.patch.yml` 已包含
+- 仓库满 1 天后提交（创建于 2026-11-06）
 
-## 上架步骤（需要你提供公开仓库）
+### 2. 添加条目文件
 
-### 1. 建公开仓库
-
-建议仓库名：`cike-taskboard`（或 `dsh-cike`）。  
-把本目录推到 `https://github.com/<你的账号>/cike-taskboard`，然后：
-
-- 仓库 **创建满 1 天**（市场 CI 硬性检查）；
-- 添加 topic：`dsh-plugin`；
-- 确认 `package.json` 的 `dsh.bundle.patch` 和 `cordis.patch.yml` 存在（已满足）。
-
-### 2. 改提交模板
-
-把 `marketplace/entry.template.yml` 复制为：
+在 awesome-dsh-plugin fork 中添加：
 
 ```text
-data/plugins/<owner>__<repo>.yml
+data/plugins/fffgfffff__cike-taskboard.yml
 ```
 
-并替换 `OWNER/REPO` 为真实仓库；描述保持属实，不要加营销词。
+内容直接复制 [entry.template.yml](entry.template.yml)。
 
-### 3. Fork + PR
+### 3. 提 PR
 
-```text
-https://github.com/awesome-dsh-plugin/awesome-dsh-plugin
-```
+- 只添加这一个 YAML 文件；
+- 不要手工改 README（由脚本生成）；
+- 标题和正文见 [PR_BODY.md](PR_BODY.md)；
+- CI 通过后维护者会读源码，合并后市场自动收录。
 
-- Fork；
-- 只添加**一个** YAML 文件（不要改 README，README 由脚本生成）；
-- 提 PR，标题例：`Add 此刻 · 任务排程 (cike-taskboard)`；
-- CI 通过后维护者会读源码；合并后站点和市场自动收录，通常一天内生效。
+### 4. 可选：发 npm
 
-### 4. 可选：发 npm（安装更快）
-
-`dsh-taskboard` 这个名字在 npm 上已被其他包占用（0.9.11），**不要覆盖**。  
-可发布为：
-
-- `dsh-cike`（本机检查时可用），或
-- `@<你的scope>/dsh-taskboard`。
-
-发布前把 `package.json` 的 `name` 改成发布名，并同步 `cordis.patch.yml` 的 `name`；然后用：
-
-```powershell
-npm login
-npm publish --access public
-```
-
-如果暂不发 npm，用 GitHub 源码安装也可以：
-
-```powershell
-dsh plugin --profile desktop add github:<owner>/<repo>
-```
+`dsh-taskboard` 在 npm 上已被其他包占用（0.9.11），不要覆盖。可发布为 `dsh-cike` 或 `@<scope>/dsh-taskboard`；发布前把 `package.json` 的 `name` 和 `cordis.patch.yml` 的 `name` 一起改掉。
 
 ---
 
-## 需要你提供
+## 为什么不能现在直接提 PR
 
-1. 一个公开 GitHub 仓库地址（或允许我创建仓库的 Token）；
-2. 如果要发 npm：npm Token（不要发在聊天里，登录本机即可）；
-3. 仓库 owner/repo 名称，我就能把 YAML 填成最终版并给出可直接提交的 PR 内容。
+`awesome-dsh-plugin` 的 CI 会检查目标仓库创建时间 ≥ 1 天；本仓库是刚创建的，现在提会直接被 CI 拒绝。等满 1 天后复制条目文件提交即可。
 
-> 市场收录不等于安全审计。提交前请确认仓库里没有本机数据、密钥、个人任务内容。
