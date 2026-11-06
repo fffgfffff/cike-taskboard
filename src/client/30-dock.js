@@ -36,7 +36,7 @@ function DockMiniItem(props) {
       h(
         'div',
         { className: 'tb-mini-item-meta' },
-        h('span', null, PRIORITY_LABELS[task.priority] || 'P2'),
+        h(PriorityBadge, { priority: task.priority }),
         h('span', null, formatDuration(item.durationMin)),
         h('span', null, entryTimeLabel(item)),
         item.current ? h('span', { className: 'tb-badge is-live' }, h('span', { className: 'tb-live-dot' }), '进行中') : null,
@@ -135,7 +135,7 @@ function TaskboardDock() {
       setTick((value) => value + 1);
       if (!drag.moved) return;
       const left = Math.max(4, Math.min(drag.layerW - drag.cardW - 4, drag.startLeft + drag.dx));
-      const top = Math.max(4, Math.min(drag.layerH - drag.cardH - 4, drag.startTop + drag.dy));
+      const top = Math.max(DOCK_SAFE_TOP, Math.min(drag.layerH - drag.cardH - 4, drag.startTop + drag.dy));
       const side = left + drag.cardW / 2 < drag.layerW / 2 ? 'left' : 'right';
       updatePrefs({ side, top: Math.round(top) });
     }
@@ -168,13 +168,13 @@ function TaskboardDock() {
   // 拖动中的实时位置
   const drag = dragRef.current;
   let left = prefs.side === 'left' ? 10 : layerW - cardW - 10;
-  let top = Math.max(8, Math.min(layerH - cardH - 8, prefs.top || 92));
+  let top = Math.max(DOCK_SAFE_TOP, Math.min(layerH - cardH - 8, prefs.top || 92));
   if (drag && drag.moved) {
     left = Math.max(4, Math.min(layerW - cardW - 4, drag.startLeft + drag.dx));
-    top = Math.max(4, Math.min(layerH - cardH - 4, drag.startTop + drag.dy));
+    top = Math.max(DOCK_SAFE_TOP, Math.min(layerH - cardH - 4, drag.startTop + drag.dy));
   }
 
-  const stripTop = Math.max(16, Math.min(layerH - 176, prefs.top || 92));
+  const stripTop = Math.max(DOCK_SAFE_TOP - 10, Math.min(layerH - 176, prefs.top || 92));
 
   function startDrag(event) {
     if (event.button !== 0) return;
@@ -252,12 +252,12 @@ function TaskboardDock() {
     const inset = 26;
     const hitStyle =
       prefs.side === 'left'
-        ? { left: inset, top: Math.max(8, stripTop - 10), width: 60, height: 176 }
-        : { right: inset, top: Math.max(8, stripTop - 10), width: 60, height: 176 };
+        ? { left: inset, top: Math.max(DOCK_SAFE_TOP - 12, stripTop - 10), width: 60, height: 176 }
+        : { right: inset, top: Math.max(DOCK_SAFE_TOP - 12, stripTop - 10), width: 60, height: 176 };
     const railStyle =
       prefs.side === 'left'
-        ? { left: 0, top: stripTop, width: inset, height: 156 }
-        : { right: 0, top: stripTop, width: inset, height: 156 };
+        ? { left: 0, top: Math.max(DOCK_SAFE_TOP - 12, stripTop - 10), width: inset, height: 156 }
+        : { right: 0, top: Math.max(DOCK_SAFE_TOP - 12, stripTop - 10), width: inset, height: 156 };
     return h(
       'div',
       { className: 'tb-root tb-dock', ref: rootRef },

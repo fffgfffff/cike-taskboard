@@ -15,6 +15,8 @@ const useStoreHook = React.useSyncExternalStore;
 
 const API_BASE = '/dsh-taskboard';
 const DOCK_STORAGE_KEY = 'dsh-taskboard:dock:v2';
+/** 给 DSH 标题栏/窗口按钮留出的安全区，避免小窗吸附到右上角时压住最小化/关闭。 */
+const DOCK_SAFE_TOP = 64;
 const ANCHOR_STORAGE_KEY = 'dsh-taskboard:anchor:v1';
 const TOAST_MS = 2800;
 
@@ -122,7 +124,7 @@ function readDockPrefs() {
       enabled: parsed.enabled !== false,
       open: parsed.open !== false,
       side: parsed.side === 'left' ? 'left' : 'right',
-      top: Number.isFinite(parsed.top) ? Math.max(0, Math.min(4000, parsed.top)) : fallback.top,
+      top: Number.isFinite(parsed.top) ? Math.max(DOCK_SAFE_TOP, Math.min(4000, parsed.top)) : fallback.top,
       width: Number.isFinite(parsed.width) ? Math.max(300, Math.min(560, parsed.width)) : fallback.width,
       height: Number.isFinite(parsed.height) ? parsed.height : 0,
       migrated: parsed.migrated === true,
@@ -134,7 +136,9 @@ function readDockPrefs() {
 
 function writeDockPrefs(prefs) {
   try {
-    localStorage.setItem(DOCK_STORAGE_KEY, JSON.stringify(prefs));
+    const safe = Object.assign({}, prefs);
+    safe.top = Math.max(DOCK_SAFE_TOP, Math.min(4000, Number(safe.top) || 92));
+    localStorage.setItem(DOCK_STORAGE_KEY, JSON.stringify(safe));
   } catch {
     /* 隐私模式/禁用 localStorage：只影响记忆，不影响功能 */
   }
