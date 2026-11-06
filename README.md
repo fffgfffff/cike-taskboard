@@ -50,7 +50,13 @@
 ## 安装（本地开发）
 
 ```powershell
-dsh plugin --profile desktop add "D:\deepseek harness\dsh-taskboard"
+dsh plugin --profile desktop add github:fffgfffff/cike-taskboard
+```
+
+也可以从本地目录安装（在仓库根目录执行）：
+
+```powershell
+dsh plugin --profile desktop add .
 ```
 
 首次安装/升级后，DSH 的 HMR 会重新组合 profile；如果界面没出现，刷新一次页面即可。
