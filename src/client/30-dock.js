@@ -72,14 +72,11 @@ function TaskboardDock() {
   const now = useNowTick(15000);
   const activePanelId = useActivePanelId();
   const [prefs, setPrefs] = useState(readDockPrefs);
-  const [hoverOpen, setHoverOpen] = useState(false);
   const [layer, setLayer] = useState({ w: 0, h: 0 });
   const [, setTick] = useState(0);
   const [quick, setQuick] = useState('');
   const rootRef = useRef(null);
   const cardRef = useRef(null);
-  const enterTimer = useRef(null);
-  const leaveTimer = useRef(null);
   const dragRef = useRef(null);
   const stripDragRef = useRef(null);
   const suppressStripClickRef = useRef(false);
@@ -113,11 +110,6 @@ function TaskboardDock() {
       if (observer) observer.disconnect();
       window.removeEventListener('resize', measure);
     };
-  }, []);
-
-  useEffect(() => () => {
-    if (enterTimer.current) clearTimeout(enterTimer.current);
-    if (leaveTimer.current) clearTimeout(leaveTimer.current);
   }, []);
 
   // 拖动：按住标题栏移动卡片，松手按中心落在哪边吸附。
@@ -159,7 +151,7 @@ function TaskboardDock() {
 
   const state = snap.state;
   const plan = state ? schedule(state.tasks, state.settings, today, { now, anchorMin: anchorMinute ?? undefined }) : null;
-  const expanded = prefs.open || hoverOpen;
+  const expanded = prefs.open;
   const layerW = layer.w || (typeof window !== 'undefined' ? window.innerWidth : 1200);
   const layerH = layer.h || (typeof window !== 'undefined' ? window.innerHeight : 800);
   const cardW = Math.max(280, Math.min(prefs.width || 348, layerW - 24));
@@ -181,8 +173,6 @@ function TaskboardDock() {
   /** 收起态也允许上下拖动，避开浏览器工具栏/侧栏按钮。 */
   function startStripDrag(event) {
     if (event.button !== 0 && event.pointerType !== 'touch') return;
-    if (enterTimer.current) clearTimeout(enterTimer.current);
-    if (leaveTimer.current) clearTimeout(leaveTimer.current);
     stripDragRef.current = {
       pointerId: event.pointerId,
       startY: event.clientY,
@@ -264,7 +254,6 @@ function TaskboardDock() {
       const layout = appContext && typeof appContext.get === 'function' ? appContext.get('layout') : null;
       if (layout && typeof layout.selectPanel === 'function') {
         layout.selectPanel('taskboard');
-        setHoverOpen(false);
         return;
       }
     } catch {
@@ -279,28 +268,6 @@ function TaskboardDock() {
     setQuick('');
     const result = await runAction('addTask', { title, priority: 2 });
     if (!result) setQuick(title);
-  }
-
-  function scheduleHoverOpen() {
-    if (prefs.open || stripDragRef.current) return;
-    if (leaveTimer.current) clearTimeout(leaveTimer.current);
-    if (enterTimer.current) clearTimeout(enterTimer.current);
-    enterTimer.current = setTimeout(() => setHoverOpen(true), 170);
-  }
-
-  function scheduleHoverClose() {
-    if (prefs.open) return;
-    if (enterTimer.current) clearTimeout(enterTimer.current);
-    if (leaveTimer.current) clearTimeout(leaveTimer.current);
-    leaveTimer.current = setTimeout(() => {
-      const card = cardRef.current;
-      if (card && card.contains(document.activeElement)) return;
-      setHoverOpen(false);
-    }, 420);
-  }
-
-  function cancelHoverClose() {
-    if (leaveTimer.current) clearTimeout(leaveTimer.current);
   }
 
   /* 收起态：一条竖排细条 */
@@ -323,9 +290,7 @@ function TaskboardDock() {
         className: 'tb-dock-rail',
         'data-side': prefs.side,
         style: railStyle,
-        title: '任务排程',
-        onPointerEnter: scheduleHoverOpen,
-        onPointerLeave: scheduleHoverClose,
+        title: '任务排程：点击展开',
         onClick: () => updatePrefs({ open: true }),
       }),
       h(
@@ -336,9 +301,7 @@ function TaskboardDock() {
           style: hitStyle,
           role: 'button',
           tabIndex: 0,
-          title: '任务排程：按住可上下拖动，滚轮也可调整位置；点击固定展开',
-          onPointerEnter: scheduleHoverOpen,
-          onPointerLeave: scheduleHoverClose,
+          title: '任务排程：按住可上下拖动，滚轮也可调整位置；点击展开',
           onPointerDown: startStripDrag,
           onPointerMove: moveStripDrag,
           onPointerUp: endStripDrag,
@@ -395,8 +358,6 @@ function TaskboardDock() {
           height: Math.round(cardH),
           transition: drag && drag.moved ? 'none' : 'left .18s ease, top .18s ease',
         },
-        onPointerEnter: cancelHoverClose,
-        onPointerLeave: scheduleHoverClose,
       },
       h(
         'div',
