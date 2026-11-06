@@ -847,7 +847,8 @@ const BOARD_CSS = `
 .tb-dock-foot b{color:var(--tb-text2);font-weight:600}
 .tb-dock-stats{margin-left:auto;display:flex;align-items:center;gap:7px;white-space:nowrap}
 .tb-dock-stats .is-over{color:var(--tb-red)}
-.tb-dock-strip-hit{pointer-events:auto;position:absolute;display:flex;justify-content:flex-end;align-items:center;z-index:2}
+.tb-dock-strip-hit{pointer-events:auto;position:absolute;display:flex;justify-content:flex-end;align-items:center;z-index:2;cursor:grab;touch-action:none;user-select:none}
+.tb-dock-strip-hit:active{cursor:grabbing}
 .tb-dock-strip-hit[data-side="left"]{justify-content:flex-start}
 .tb-dock-rail{position:absolute;pointer-events:auto;cursor:pointer;z-index:1;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--tb-accent) 22%,transparent));border-radius:8px 0 0 8px}
 .tb-dock-rail[data-side="left"]{background:linear-gradient(270deg,transparent,color-mix(in srgb,var(--tb-accent) 22%,transparent));border-radius:0 8px 8px 0}
