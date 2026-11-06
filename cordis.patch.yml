@@ -1,0 +1,9 @@
+# dsh-taskboard bundle patch
+#
+# 一行宿主插件：宿主半侧负责本地 JSON 存储、跨天顺延与 /dsh-taskboard 路由；
+# 浏览器半侧（package.json 的 dsh.client）负责侧边栏面板与边缘悬浮小窗。
+# 必须在 dsh-base + dsh-web-app 之后应用——那时 sidebar.panellist / main /
+# shell.overlay 三个席位才存在。
+- insert:
+    - id: dsh-taskboard
+      name: 'dsh-taskboard'

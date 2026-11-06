@@ -1,0 +1,60 @@
+{
+  "name": "dsh-taskboard",
+  "version": "0.2.0",
+  "description": "此刻：贴着实时时间排今天的任务，到点弹窗提醒；支持未来 7 天与虚拟时间轴。DSH 侧边栏面板 + 可收起的边缘小窗，纯本地存储。",
+  "type": "module",
+  "license": "MIT",
+  "icon": "./icon.svg",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json",
+    "./cordis.patch.yml": "./cordis.patch.yml"
+  },
+  "files": [
+    "lib",
+    "src",
+    "tests",
+    "scripts",
+    "cordis.patch.yml",
+    "icon.svg",
+    "README.md",
+    "需求与操作清单.md",
+    "使用教程.md",
+    "SECURITY.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "docs",
+    "marketplace"
+  ],
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "taskboard",
+    "todo",
+    "schedule",
+    "planner"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-layout",
+        "@deepseek-ai/dsh-client-ui-sidebar"
+      ]
+    }
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test tests/*.test.js",
+    "verify": "node scripts/build.mjs && node --test tests/*.test.js"
+  }
+}
