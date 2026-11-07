@@ -3,12 +3,10 @@
 ## 现状
 
 - **代码已上传公开仓库**：<https://github.com/fffgfffff/cike-taskboard>
-- **市场条目尚未提交**：仓库创建于 2026-11-06，`awesome-dsh-plugin` 要求仓库创建满 **1 天**，明天才能过 CI。
-- 提交模板已填好真实 URL：`marketplace/entry.template.yml`。
-- 提交路径：Fork `awesome-dsh-plugin/awesome-dsh-plugin`，添加
-  `data/plugins/fffgfffff__cike-taskboard.yml`，提 PR。
-
-仓库已加 topics：`dsh-plugin`、`dsh`、`taskboard`、`todo`、`productivity`。
+- **市场条目已提交 PR**：<https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/pull/12912>
+- PR 只新增 `data/plugins/fffgfffff__cike-taskboard.yml`，内容检查全部通过。
+- 当前 CI 的 **Build** 步骤红：原因是上游 `data/screenshots.json` 还留着 `Ultronen/...` 改名前的两个 key（条目已改成 `Ultroncn/...`），与本插件条目无关；已在 PR 里留言请维护者修数据/重跑。
+- 合并后市场会自动收录，通常一天内生效。
 
 ---
 
@@ -44,7 +42,7 @@ data/plugins/fffgfffff__cike-taskboard.yml
 
 ---
 
-## 为什么不能现在直接提 PR
+## 后续
 
-`awesome-dsh-plugin` 的 CI 会检查目标仓库创建时间 ≥ 1 天；本仓库是刚创建的，现在提会直接被 CI 拒绝。等满 1 天后复制条目文件提交即可。
+PR 已提交（#12912）。等上游修掉 `screenshots.json` 的旧 key 或维护者重跑后，CI 转绿；合并后市场自动收录。若需要，我可以再开一个只改 `data/screenshots.json` 的小 PR 来解除这个上游阻塞。
 
